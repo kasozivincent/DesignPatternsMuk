@@ -1,0 +1,59 @@
+﻿<div style="display: flex; justify-content: center">
+	<div style="width:90%; margin: 1rem">
+		<img style="width: 100%" src="@path" />
+	</div>
+	<div style="display: flex; align-items: center">
+		<div >
+			@if (@visible)
+			{
+				<div>
+					<FluentButton OnClick="@Left"
+					              IconEnd="@(new Icons.Filled.Size12.ArrowUp())"
+					              Appearance="Appearance.Accent">
+						old
+					</FluentButton>
+				</div>
+			}
+			else
+			{
+				<div>
+					<FluentButton OnClick="@Right"
+
+					              IconEnd="@(new Icons.Filled.Size12.ArrowDown())"
+					              Appearance="Appearance.Accent">
+						new
+					</FluentButton>
+				</div>
+			}
+		</div>
+	</div>
+	
+</div>
+
+
+@code {
+	private bool visible = true;
+	private string path;
+
+	[Parameter] public string Previous { get; set; }
+	[Parameter] public string Current { get; set; }
+
+	protected override void OnInitialized()
+	{
+		path = Current;
+	}
+
+	private void Left()
+	{
+	    path = Previous;
+		visible = !visible;
+	}
+
+
+	private void Right()
+	{
+		path = Current;
+		visible = !visible;
+	}
+
+}

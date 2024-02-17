@@ -1,0 +1,16 @@
+﻿<style>
+	.container {
+		margin: auto;
+		max-width: 1100px;
+	}
+</style>
+
+<div class="container">
+	@ChildContent
+</div>
+
+@code
+{
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+}

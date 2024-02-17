@@ -1,0 +1,48 @@
+﻿<style>
+    .custom-card {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fff;
+    }
+
+    .custom-card-header {
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 10px;
+        color:white;
+        text-align: center;
+        background-color: #00308F;
+        padding: 10px;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .content-space {
+        margin: 10px;
+    }
+
+    .space{
+        margin-top: 1.5rem;
+    }
+
+    .custom-card-content{
+        padding: 2rem;
+        font-size: 18px;
+        line-height: 1.5
+    }
+</style>
+<div class="custom-card space">
+	<h2 class="custom-card-header">@Title</h2>
+	<div class="custom-card-content">
+		@ChildContent
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public string Title { get; set; }
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+}
+
+

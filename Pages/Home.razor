@@ -1,0 +1,607 @@
+﻿@page "/"
+
+<style>
+	.badge {
+		display: inline-block;
+		padding: 3px 5px;
+		background-color: #e1f3ff;
+		color: #000;
+		border-radius: 20px;
+		font-weight: bold;
+	}
+</style>
+
+<PageTitle>Home</PageTitle>
+
+<Step Title="Why this course?">
+	<ul>
+		<li>To learn about object orientation.</li>
+		<li>To understand and apply GoF design patterns in your
+			daily projects.
+		</li>
+		<li>To understand design decisions behind most of the Java
+			libray classes.
+		</li>
+	</ul>
+	
+	
+</Step>
+
+
+<Step Title="Unified Modeling Language crash course">
+	<Section SectionTitle="What is UML?">
+		Unified modeling language is a visual modeling language designed by
+		Grady Booch, James Rambaught and Ivar Jacobson. It is used to design
+		object oriented systems in a language agnostic way.
+	</Section>
+	
+	<div style="display: flex; justify-content: space-evenly">
+		<CircularImage Path="images/grady.jpg"
+		               Caption="Grady Booch"/>
+		<CircularImage Path="images/james.jpg" 
+		               Caption="James Rambaugh"/>
+		<CircularImage Path="images/ivar_jacobson.jpg" 
+		               Caption="Ivar Jacobson"/>
+	</div>
+
+</Step>
+
+<Step Title="First Version">
+	<Paragraph>
+		The class <span class="badge">BankProgram</span> holds a map that stores the balances of several
+		accounts held by a bank. Each element in the map is a key-value pair. 
+		The key is an integer that denotes the account number and its value is the 
+		dollars	
+	</Paragraph>
+	<Code Path="images/first-version.png"/>
+	<Paragraph>
+		The program’s run method performs a loop that repeatedly reads
+		commands from the console and executes them. There are eight
+		commands, each of which has a corresponding method.
+	</Paragraph>
+	<Code Path="images/run-version1.png"/>
+
+	<Paragraph >
+		The <span class="badge">Quit</span> method sets the global variable done to true, which causes
+		the loop to terminate.
+	</Paragraph>
+	<Code Path="images/Quit.png"/>
+
+	<Paragraph>
+		The global variable currentAccountNumber keeps track of the current account
+		Number. The newAccount method allocates a new account number, makes it 
+		current, and assigns it to the map with an initial balance of 0
+	</Paragraph>
+	<Code Path="images/CreateAccountv1.png"/>
+
+	<Paragraph>
+		The select method makes an existing account current. It also prints
+		the account balance.
+	</Paragraph>
+	<Code Path="images/SelectAccountv1.png"/>
+
+	<Paragraph>
+		The deposit method increases the balance of the current account by a
+		specified number of dollars.
+	</Paragraph>
+	<Code Path="images/DepositMoneyV1.png"/>
+	
+	<Paragraph>
+		The method authorizeLoan determines whether the current account 
+		has enough money to be used as collateral for a loan. The criterion is that 
+		the account must contain at least half of the loan amount.
+	</Paragraph>
+	<Code Path="images/ProcessLoanV1.png"/>
+	
+	<Code Path="images/DisplayAccountsv1.png" />
+	
+	<Code Path="images/TransferMoneyv1.png" />
+	
+	<Paragraph>
+		The BankProgram code is correct. But is it any good? Note that the program
+		has multiple areas of responsibility—for example, one responsibility is to
+		<b>handle I/O processing</b> and another responsibility is to <b>
+			manage account
+			information
+		</b>—and both responsibilities are handled by a single class.
+	</Paragraph>
+	
+
+	<Paragraph>
+		Multipurpose classes violate the fundamental design principle. The
+		issue is that each area of responsibility will have different reasons for
+		changing. If these responsibilities are implemented by a single class then
+		the entire class will have to be modified whenever a change occurs to one aspect of it
+	</Paragraph>
+
+	<InformationCallOut Header="Single Responsibility Principle">
+		A software entity should have a single reason to change.
+	</InformationCallOut>
+	
+	<Paragraph>
+		A program that satisfies the Single Responsibility rule will be organized 
+		into classes, with each class having its own unique responsibility.
+		Version 2 of the banking demo is an example of such a design. It 
+		contains three classes: The class <span class="badge">Bank</span> is responsible 
+		for the banking information; the class <span class="badge">BankClient</span> is 
+		responsible for I/O processing; and the class <span class="badge">BankProgram</span> 
+		is responsible for putting everything together
+	</Paragraph>
+</Step>
+
+<Step Title="Second Version">
+	<img src="images/uml/ClassDiagram1.png" />
+	
+	<Section SectionTitle="The Bank class">
+		<Paragraph>
+			Similarly, the <span class="badge">DepositMoney</span> method is not responsible for asking the user
+			for the deposit amount. Instead, it expects the caller of the method (i.e., 
+			BankClient) to pass the amount as an argument.
+		</Paragraph>
+		<Code Path="images/version2/DepositMoney.png"></Code>
+	
+		<Paragraph>
+			The <span class="badge">IsElligibleForLoan</span> method eliminates both input and output code
+			from the corresponding version 1 method. It expects the loan amount to be 
+			passed in as an argument and it returns the decision as a boolean
+		</Paragraph>
+		<Code Path="images/version2/IsElligibleForloan.png"></Code>
+	
+		<Paragraph>
+			The <span class="badge">GetBalance</span> method corresponds to the select method of version 1.
+			That method is primarily concerned with choosing a current account, 
+			which is the responsibility of BankClient. Its only bank-specific code 
+			involves obtaining the balance of the selected account. The Bank class 
+			therefore has a getBalance method for select to call.
+		</Paragraph>
+		<Code Path="images/version2/GetBalance.png"></Code>
+	
+		<Paragraph>
+			The <span class="badge">DisplayAccounts</span> method in version 1 prints the information of each account.
+			The bank-specific portion of this method is to collect this information into a 
+			string, which is the responsibility of Bank’s toString method.
+		</Paragraph>
+		<Code Path="images/version2/DisplayAccounts.png"></Code>
+	
+		<Paragraph>
+			The <span class="badge">AddInterest</span> method in version 1 has no input/output component
+			whatsoever. Consequently, it is identical to the corresponding method in Bank.
+		</Paragraph>
+		<Code Path="images/version2/AddInterest.png"></Code>
+	
+		<Paragraph>
+			The <span class="badge">TransferMoney</span> method in version 2 has no input/output 
+			component whatsoever. It takes in the values it needs as parameters that are provided by
+			the <span class="badge">BankClient</span> class.
+		</Paragraph>
+		<Code Path="images/version2/TransferMoney.png"></Code>
+	</Section>
+	
+	<Section SectionTitle="The BankClient class">
+
+	</Section>
+</Step>
+
+<Step Title="Third version">
+	<Paragraph>
+		Suppose now that the bank also wants to store additional information 
+		for each account. In particular, assume that the bank wants to know 
+		whether the owner of each account is foreign or domestic. How should 
+		the program change?
+		After some quiet reflection, you will realize that the program needs 
+		an explicit concept of a bank account. This concept can be implemented 
+		as a class; call it BankAccount. The bank’s map can then associate a 
+		BankAccount object with each account number. These changes form 
+		version 3 of the banking demo
+	</Paragraph>
+	<Image Path="images/Version3/version3.png" />
+	
+	<Section SectionTitle="The Account class">
+		<Code Path="images/version3/bank/account.png"></Code>
+		<Paragraph>
+			It has five fields, which hold the account number, the balance, account state,
+			the date it was created and whether account is local or foreign. It has properties 
+			to retrieve and set the values of the five variables.
+		</Paragraph>
+	</Section>
+
+	<Section SectionTitle="The Bank class">
+		<Paragraph>
+			The <span class="badge">Bank</span> class now holds a map of <span class="badge">Account</span>
+			objects instead of a map of integers. 
+			The <span class="badge">currentAccountNumber</span> variable is also gone since we
+			are now using guids for the account number and not an integer.
+		</Paragraph>
+		<Comparer Current="images/version3/Bank/create_account.png"
+		          Previous="images/version2/GetBalance.png"></Comparer>
+		
+		<Paragraph>
+			The <span class="badge">DepositMoney</span> method has been modified. We first
+			retrieve the account associated with a given account number and then access its
+			balance field and modify it accordingly. The accountNumber is now encoded as a guid
+			and the account balance is now a decimal. Decimals are better than ints and floats
+			when working with money.
+		</Paragraph>
+		
+		<Comparer Current="images/version3/Bank/deposit_money.png"
+		          Previous="images/version2/DepositMoney.png"></Comparer>
+		
+		<Paragraph>
+			The <span class="badge">DisplayAccounts</span> hasn't changed a lot. The only change
+			is that now the <span class="badge">Bank</span> class is delegating to the
+			<span class="badge">Account</span> class to return its string representation. We
+			achieved this by overriding the <span class="badge">ToString</span> method of the
+			account class.
+		</Paragraph>
+		<Comparer Current="images/version3/Bank/display_accounts.png"
+		          Previous="images/version2/DisplayAccounts.png"></Comparer>
+		
+		<Paragraph>
+			The <span class="badge">IsElligibleForLoan</span> method has some new additions.
+			<ul>
+				<li>It now uses a custom enumeration as its return type and not a bool.</li>
+				<li>It encodes the account Number as a Guid and the loan amount as a decimal</li>
+			</ul>
+		</Paragraph>
+		<Comparer Current="images/version3/Bank/is_elligible_for_loan.png"
+		          Previous="images/version2/IsElligibleForLoan.png"></Comparer>
+		
+		<Paragraph>
+			There is nothing new that has been to the <span class="badge">
+				TransferMoney
+			</span> method. All that is new is that we now first access an account associated
+			with a given account number and then do the logic we had in the previous version.
+		</Paragraph>
+		<Comparer Current="images/version3/Bank/transfer_money.png"
+		          Previous="images/version2/TransferMoney.png"></Comparer>
+		
+		<Paragraph>
+			There is nothing new that has been to the <span class="badge">
+				AddInterest
+			</span> method. All that is new is that we now first access an account associated
+			with a given account number and then do the logic we had in the previous version.
+		</Paragraph>
+		<Comparer Current="images/version3/Bank/add_interest.png"
+		          Previous="images/version2/AddInterest.png"></Comparer>
+		
+		<Paragraph>
+			The <span class="badge">Bank</span> class also contains two new methods for allowing
+			users to change the account state and category. These are shown below.
+		</Paragraph>
+		<Code Path="images/version3/Bank/change.png"></Code>
+	</Section>
+	<Section SectionTitle="The BankClient class">
+		<Paragraph>
+			There is nothing new that has been to the <span class="badge">
+				AddInterest
+			</span> method. All that is new is that we now first access an account associated
+			with a given account number and then do the logic we had in the previous version.
+		</Paragraph>
+		<Comparer Current="images/version3/BankClient/process_command.png"
+		          Previous="images/version2/BankClient/process_command.png"></Comparer>
+		
+		<Paragraph>
+			There is nothing new that has been to the <span class="badge">
+				AddInterest
+			</span> method. All that is new is that we now first access an account associated
+			with a given account number and then do the logic we had in the previous version.
+		</Paragraph>
+		<Comparer Current="images/version3/BankClient/run.png"
+		          Previous="images/version2/BankClient/run.png"></Comparer>
+		
+		<Paragraph>
+			There is nothing new that has been to the <span class="badge">
+				AddInterest
+			</span> method. All that is new is that we now first access an account associated
+			with a given account number and then do the logic we had in the previous version.
+		</Paragraph>
+		<Code Path="images/version3/BankClient/state_category.png"/>
+	</Section>
+	
+	<Paragraph>
+		This relatively minor change to BankClient points out the advantage 
+		of modularity. Even though the Bank class changed how it implemented 
+		its methods, its contract with BankClient did not change. The only change 
+		resulted from the added functionality
+	</Paragraph>
+	
+	<InformationCallOut Header="The Encapsulation Rule">
+		A class’s implementation details should be hidden from its clients 
+		as much as possible.
+	</InformationCallOut>
+	
+	<Paragraph>
+		In other words, the less that clients are aware of the implementation of 
+		a class, the more easily that class can change without affecting its clients.
+	</Paragraph>
+</Step>
+
+<Step Title="The Most Qualified Class Rule">
+	<Image Path="images/Version4/version4.png" />
+	
+	<Paragraph>
+		The classes of the version 3 banking demo are modular and encapsulated. 
+		Nevertheless, there is something unsatisfactory about the design of their 
+		methods. In particular, the <span class="badge">Account</span> doesn’t do anything
+		interesting. All the work occurs in Bank.
+	</Paragraph>
+	
+	<Section SectionTitle="Account class">
+		<Paragraph>
+			The <span class="badge">Account</span> class now has methods that correspond to the
+			DepositMoney, WithdrawMoney, ToString, and AddInterest methods of Bank. The class also has 
+			the method IsElligibleForLoan, which (as we shall see) corresponds to 
+			Bank’s IsElligibleForLoan method.
+		</Paragraph>
+		<Code Path="images/version4/Account/account_additions.png"></Code>
+	</Section>
+	
+	<Section SectionTitle="Bank class">
+		<Paragraph>
+			As previously discussed, the bank’s <span class="badge">DepositMoney</span> method 
+			is no longer responsible for updating the account balance. Instead, the method calls 
+			the corresponding method in <span class="badge">Account</span> to perform the update.
+		</Paragraph>
+		<Comparer Current="images/version4/Bank/deposit_money.png"
+		          Previous="images/version3/Bank/deposit_money.png"></Comparer>
+		
+		<Paragraph>
+			The bank’s <span class="badge">AddInterest</span> method is similar. The method 
+			calls the addInterest method of each account,allowing each account to update its 
+			own balance.
+		</Paragraph>
+		<Comparer Current="images/version4/Bank/add_interest.png"
+		          Previous="images/version3/Bank/add_interest.png"></Comparer>
+		
+		<Paragraph>
+			The bank’s <span class="badge">TransferMoney</span> method no longer has to get the
+			balance from each account. It instead delegates to the account's <span class="badge">
+				DepositMoney
+			</span> and <span class="badge">
+				WithdrawMoneyMoney
+			</span> methods. It also no longer throws the exception, this is the role of the 
+			<span class="badge">Account</span> class now.
+		</Paragraph>
+		<Comparer Current="images/version4/Bank/transfer_money.png"
+		          Previous="images/version3/Bank/transfer_money.png"></Comparer>
+	</Section>
+	
+	<Section SectionTitle="BankClient">
+
+	</Section>
+	
+	<Section SectionTitle="Meditation">
+		<Paragraph>
+			The <span class="badge">BankClient</span> class in the version 4 banking demo 
+			does not know about <span class="badge">BankAccount</span>
+			objects. It interacts with accounts solely through methods of 
+			the <span class="badge">Bank</span> class. The Bank class is called a mediator.
+			
+		</Paragraph>
+		
+		<Paragraph>
+			Mediation can enhance the modularity of a program. If the Bank class
+			is the only class that can access BankAccount objects then BankAccount is
+			essentially private to Bank. This feature was important when the version
+			3 BankAccount class was modified to produce version 4; it ensured that
+			the only other class that needed to be modified was Bank. This desirability
+			leads to the following rule, called the rule of Low Coupling.
+		</Paragraph>
+		
+		<Comparer Current="images/Version4/Bank/alter.png"
+		          Previous="images/Version3/BankClient/withdraw_money.png"></Comparer>
+		
+		<InformationCallOut Header="The Rule of Low Coupling">
+			Try to minimize the number of class dependencies.
+		</InformationCallOut>
+		
+		<Code Path="images/version4/alter.png"></Code>
+		
+		
+		<Paragraph>
+			As a real-life example of some design tradeoffs, consider the <span class="badge">Dictionary</span> class 
+			in the BCL. The typical way to implement a dictionary is to store each keyvalue pair as a node. The nodes 
+			are then inserted into a hash table. In CSharp, these nodes have the type <span class="badge">KeyValuePair</span>.
+		</Paragraph>
+		
+		<Paragraph>
+			Clients of a dictionary typically do not interact with KeyValuePair objects. 
+			Instead, clients call the dictionary methods <span class="badge">Add</span> and the indexer. 
+			Given a key, the indexer locates the entry having that key and returns its associated value; 
+			the <span class="badge">Add</span> method locates the entry having that key and changes its value. If 
+			a client wants to examine all entries in the dictionary then it can call the 
+			<span class="Keys"></span> property to get all keys, and then repeatedly index to find their associated 
+			values as shown below.
+		</Paragraph>
+		<Code Path="images/Version3/Bank/display_accounts.png"></Code>
+		
+		<Paragraph>
+			Unfortunately, this mediation can lead to inefficient code. The loop 
+			in the above snippet is such an example. The <span class="badge">Keys</span> property
+			traverses the entire data structure to acquire all the keys. The indexer then has to 
+			repeatedly access the data structure again to get the value of each key.
+		</Paragraph>
+
+		<Paragraph>
+			The code would be more efficient if the client code could access the 
+			dictionary entries directly. Then it could simply traverse the data structure 
+			once, getting each entry and printing its contents. In fact, such a method 
+			does exist on the dictionary class, and is called <span class="badge">GetEnumerator</span>. 
+			The code in below is equivalent to the code in the previous listing but is more efficient
+		</Paragraph>
+		<Code Path="images/Version4/dict.png"></Code>
+	</Section>
+	
+	<Section SectionTitle="Dependency Inversion">
+		<Comparer Current="images/version4/Bank/bank_header.png"
+		          Previous="images/version3/Bank/bank_header.png"></Comparer>
+		
+		<Comparer Current="images/Version4/BankClient/client_bettter.png"
+		          Previous="images/Version3/BankClient/bank_client.png"></Comparer>
+	</Section>
+</Step>
+
+<Step Title="Polymorphism">
+	<Paragraph>
+		Suppose you have been asked to modify version 4 of the banking demo 
+		to support two kinds of bank account: savings accounts and checking 
+		accounts. Savings accounts correspond to the bank accounts of version 4. 
+		Checking accounts differ from savings accounts in the following three ways:
+		
+		<ul>
+			<li>When authorizing a loan, a checking account needs a 
+				balance of two thirds the loan amount, whereas savings 
+				accounts require only one half the loan amount.
+			</li>
+			
+			<li>
+				The bank gives periodic interest to savings accounts but 
+				not checking accounts.
+			</li>
+			
+			<li>
+				The toString method of an account will return 
+				“Savings Account” or “Checking Account,” as 
+				appropriate
+			</li>
+		</ul>
+	</Paragraph>
+	
+	<Paragraph>
+		One straightforward (and somewhat naïve) way to implement these 
+		two types of accounts would be to modify the code for <span class="badge">Account</span>.
+		For example, it could have a variable that holds the type 
+		of the account: a value of 1 denotes a savings account and a value of 
+		2 denotes a checking account. The methods <span class="badge">IsElligibleForLoan</span>, 
+		<span class="badge">ToString</span>, and <span class="badge">AddInterest</span> would use an if-statement to determine
+		which account type to handle. The following listings show the basic idea.
+	</Paragraph>
+	
+	<Code Path="images/Version5/is.png"></Code>
+	<Code Path="images/Version5/interest.png"></Code>
+	<Code Path="images/Version5/tostring.png"></Code>
+	
+	<Paragraph>
+		The way to avoid this if-statement problem is to use a separate 
+		class for each type of account. Call these classes SavingsAccount and 
+		CheckingAccount. The advantage is that each class can have its own 
+		implementation of the methods, so there is no need for an if-statement. 
+		Moreover, whenever you need to add another type of bank account you 
+		can simply create a new class
+	</Paragraph>
+	<Image Path="images/Version5/version5.png"></Image>
+	
+	<Section SectionTitle="Bank class">
+		<Paragraph>
+			Consider the method <span class="badge">CreateAccount</span>. It now has an 
+			additional parameter denoting the account type. The method creates an 
+			object of the specified class and stores a reference to it in the variable bankAccount. 
+			Because this variable has the type <span class="badge">Account</span>, it can hold 
+			a reference to either a SavingsAccount or a CheckingAccount object. Consequently, both 
+			savings and checking accounts can be stored in the accounts dictionary.
+		</Paragraph>
+		<Comparer Current="images/Version5/Bank/createAccount.png"
+		          Previous="images/Version4/Bank/createAccount.png"></Comparer>
+		
+		<Paragraph>
+			The <span class="badge">AddInterest</span> method uses the "is" operator. This operator returns
+			true if the object reference on its left side can be cast to the type on its
+			right side. By calling "is" on each Account object, the method
+			determines which objects are of type SavingsAccount. It then uses
+			a typecast to create an object reference of type SavingsAccount, which can
+			then call the addInterest method.
+		</Paragraph>
+		<Comparer Current="images/Version5/Bank/AddInterest.png"
+		          Previous="images/Version4/Bank/add_interest.png"></Comparer>
+		
+		
+	</Section>
+</Step>
+
+<Step Title="The Transparency Rule">
+	<Paragraph>
+		The technique of combining the "is" operator with a typecast gives 
+		correct results, but it violates the fundamental design principle. The 
+		problem is that the code specifically mentions class names. If the bank 
+		adds another account type that also gives interest (such as a “money 
+		market account”) then you would need to modify the addInterest method 
+		to deal with it.
+	</Paragraph>
+	
+	<Paragraph>
+		The if-statement problem is rearing its ugly head again. Each time a
+		new kind of account is created, you will need to examine every relevant
+		portion of the program to decide whether that new class needs to be added
+		to the if-statement. For large programs, this is a daunting task that has
+		potential for the creation of many bugs.
+	</Paragraph>
+	
+	<InformationCallOut Header="The Rule of Transparency">
+		A client should be able to use an abstraction without needing 
+		to know the classes that implement that abstraction
+	</InformationCallOut>
+	
+	<Paragraph>
+		The version 6 banking demo revises version 5 so that <span class="badge">Account</span>
+		is transparent. This transparency requires changes to the code for 
+		<span class="badge">Account</span>, <span class="badge">CheckingAccount</span>, and 
+		<span class="badge">Bank</span>:
+	</Paragraph>
+	
+	<Image Path="images/Version6/version6.png"></Image>
+	
+	
+	
+	<Paragraph>
+		<span class="badge">CheckingAccount</span> must implement the additional method
+		<span class="badge">AddInterest</span>. Doing so turns out to be very easy. The addInterest method
+		simply needs to do nothing
+	</Paragraph>
+	<Code Path="images/Version6/Bank/version6changes.png"></Code>
+	
+	<Paragraph>
+		And Bank has a new, transparent implementation of addInterest:
+	</Paragraph>
+	<Code Path="images/Version6/Bank/add_interest.png"></Code>
+	
+	<Paragraph>
+		An important side effect of transparency is that it can reduce coupling 
+		between classes. In particular, note that the <span class="badge">AddInterest</span> method no
+		longer causes a dependency on <span class="badge">SavingsAccount</span>. 
+		The <span class="badge">CreateAccount</span>
+		method is now the only place in Bank that mentions <span class="badge">SavingsAccount</span>
+		and <span class="badge">CheckingAccount</span>.
+	</Paragraph>
+</Step>
+
+<Step Title="The Template Design Pattern">
+	<InformationCallOut Header="Template Pattern">
+		Define the skeleton of an algorithm in an operation, deferring some steps to subclasses. Template 
+		Method lets subclasses redefine certain steps of an algorithm without changing the algorithm's structure.
+	</InformationCallOut>
+	<Paragraph>
+		Suppose that you want to modify the banking demo to
+		have the new bank account type “interest checking.” An interest checking
+		account is exactly like a regular checking account except that it gives
+		periodic interest.
+	</Paragraph>
+
+	<Image Path="images/Version7/version7_1.png"></Image>
+	<Paragraph>
+		An abstract class defines a category of related classes. For example, the
+		class <span class="badge">Account</span> defines the category "bank accounts"" whose
+		descendent classes—savings accounts, checking accounts, and interest
+		checking accounts—are members of this category.
+	</Paragraph>
+
+	<Paragraph>
+		On the other hand, a non-abstract superclass such as <span class="badge">CheckingAccount</span>
+		plays both roles: it defines the category "checking accounts"" (of which
+		InterestChecking is a member) and it also denotes a particular member
+		of that category (namely, the "regular checking accounts""). This dual
+		usage of CheckingAccount makes the class less easy to understand and
+		complicates the design.
+	</Paragraph>
+
+	<Image Path="images/Version8/version8.png"></Image>
+</Step>

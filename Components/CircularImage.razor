@@ -1,0 +1,28 @@
+﻿<style>
+	.circular-image {
+		width: 200px;
+		height: 200px;
+		border-radius: 50%;
+		overflow: hidden;
+	}
+
+		.circular-image img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	.para{
+		margin-top: 10px;
+	}
+</style>
+
+<div class="circular-image">
+	<img src="@Path" alt="Circular Image">
+	<p class="para">@Caption</p>
+</div>
+
+@code 
+{
+	[Parameter] public string Path { get; set; }
+	[Parameter] public string Caption { get; set; }
+}

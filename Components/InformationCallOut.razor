@@ -1,0 +1,61 @@
+﻿<style>
+	.callout {
+		border: 1px solid;
+		border-radius: 3px;
+		padding: 10px;
+		margin: 10px 0;
+	}
+
+	.callout-header {
+		font-weight: bold;
+		padding: 5px 10px;
+	}
+
+	.info {
+		border-color: #17a2b8;
+		background-color: #e7f3f7;
+		color: #0c5460;
+	}
+
+	.warning {
+		border-color: #ffc107;
+		background-color: #fff3cd;
+		color: #664d03;
+	}
+
+	.danger {
+		border-color: #dc3545;
+		background-color: #f8d7da;
+		color: #721c24;
+	}
+
+	.success {
+		border-color: #28a745;
+		background-color: #d4edda;
+		color: #155724;
+	}
+
+	.content {
+		margin-top: 5px;
+	}
+</style>
+
+<div style="display: flex; justify-content: center">
+	<div class="callout @CssClass" style="width: 80%">
+		<div class="callout-header">@Header</div>
+		<div class="callout-content">
+			@ChildContent
+		</div>
+	</div>
+</div>
+
+
+@code
+{
+	[Parameter] public string Header { get; set; }
+
+	[Parameter]
+	public string CssClass { get; set; } = "info";
+	[Parameter] public RenderFragment ChildContent { get; set; }
+}
+

@@ -1,0 +1,14 @@
+﻿<style>
+	.format{
+		font-size: 18px;
+		line-height: 1.5
+	}
+</style>
+
+<p class="format">
+	@ChildContent
+</p>
+
+@code {
+	[Parameter] public RenderFragment ChildContent { get; set; }
+}
